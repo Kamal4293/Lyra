@@ -1,9 +1,7 @@
-# Use Python 3.10 to match your app requirements
+# Use Python 3.10
 FROM python:3.10
 
-# 1. INSTALL CRITICAL NETWORK TOOLS
-# 'ca-certificates' helps with secure connections
-# 'dnsutils' and 'iputils-ping' fix the "No address" DNS errors
+# 1. Install System Tools
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     libsndfile1 \
@@ -24,17 +22,14 @@ WORKDIR /app
 COPY --chown=user ./requirements.txt requirements.txt
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-# 4. Copy App Code
+# 4. Copy Code & Startup Script
 COPY --chown=user . /app
 
-# 5. Download Brain (Signatures)
-RUN wget https://huggingface.co/datasets/Kamal429316/lyra-brain-data/resolve/main/signatures.zip -O signatures.zip
+# 5. Make the startup script executable
+RUN chmod +x start.sh
 
-# 6. Unzip
-RUN unzip signatures.zip && rm signatures.zip
-
-# 7. Create Music Folder
+# 6. Create Music Folder
 RUN mkdir -p static/music
 
-# 8. Start App
-CMD ["gunicorn", "-b", "0.0.0.0:7860", "--timeout", "120", "app:app"]
+# 7. COMMAND: Run the startup script instead of gunicorn directly
+CMD ["./start.sh"]
