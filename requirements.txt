@@ -1,0 +1,9 @@
+flask
+yt-dlp
+gunicorn
+tensorflow-cpu
+tensorflow-hub
+librosa
+scipy
+joblib
+numpy
